@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aventura da Saúde</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #eaf8f1;
+    color: #173b35;
+}
+
+h1 {
+    color: #13795b;
+}
+
+.info {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 15px;
+}
+
+canvas {
+    width: 100%;
+    max-width: 850px;
+    touch-action: none;
+    background: #bcebd7;
+    border: 4px solid #13795b;
+    border-radius: 12px;
+}
+
+button {
+    padding: 12px 18px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    background: #13795b;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0d6047;
+}
+
+#mensagem {
+    font-weight: bold;
+    margin: 12px;
+}
+</style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1b5e20">
+<style id="ecoplay-improvements">.ecoplay-teacher-section{padding:clamp(28px,5vw,56px) 5%;background:#eef8ef;color:#174d2a}.ecoplay-teacher-inner{width:min(100%,1050px);margin:0 auto}.ecoplay-teacher-section h2{margin:0 0 12px;color:#176b37}.ecoplay-teacher-section p{line-height:1.65}.ecoplay-teacher-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}.ecoplay-teacher-grid article{min-width:0;padding:20px;background:#fff;border:1px solid #d4e8d7;border-radius:14px;box-shadow:0 4px 14px rgba(20,80,35,.06)}.ecoplay-teacher-grid h3{margin-top:0;line-height:1.35}.ecoplay-teacher-note{padding:14px 16px;border-left:4px solid #248346;background:#fff;border-radius:6px}.ecoplay-teacher-section .ecoplay-button{display:inline-block;padding:11px 18px;border-radius:9px;background:#176b37;color:#fff;text-decoration:none;font-weight:700}.ecoplay-game-intro{max-width:900px;margin:18px auto;padding:22px;border-radius:14px;background:#f0f8f0;color:#174d2a;line-height:1.65}.ecoplay-game-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.ecoplay-game-card{padding:20px;border:1px solid #d4e8d7;border-radius:14px;background:#fff;color:#174d2a}.ecoplay-game-card h2{margin-top:0;font-size:1.25rem}.ecoplay-game-card a{display:inline-block;margin-top:8px;color:#176b37;font-weight:700}@media(max-width:700px){.ecoplay-teacher-grid,.ecoplay-game-cards{grid-template-columns:1fr}.ecoplay-teacher-grid article,.ecoplay-game-card{padding:17px}}</style>
+</head>
+
+<body>
+<div class="ecoplay-site-header">
+    <nav class="ecoplay-nav" aria-label="Navegação principal">
+        <a href="index.html">Educação escolar</a>
+        <a href="meio_ambiente.html">Meio ambiente</a>
+        <a href="saude.html">Saúde</a>
+        <a href="diversao.html">Diversão</a>
+        <a href="para_professores.html">Para professores</a>
+    </nav>
+        <div class="install-area">
+                <button class="install-button" id="installAppButton" type="button">⬇️ Baixar app</button>
+                <p class="install-message" id="installAppMessage" aria-live="polite"></p>
+            </div>
+    <p class="ecoplay-install-message" aria-live="polite"></p>
+</div>
+<a class="ecoplay-skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
+
+<h1 id="conteudo-principal">🌿 Aventura da Saúde</h1>
+<p>Corra, pule e colete itens saudáveis! ⚠️ Obstáculos vermelhos são perigosos; itens com brilho amarelo dão pontos. A cada nível, a aventura fica mais rápida.</p>
+
+<div class="info">
+    💚 Saúde: <span id="saude">3</span>
+    ⭐ Pontos: <span id="pontos">0</span>
+    ⚡ Nível: <span id="nivel">1</span>
+    🚀 Velocidade: <span id="velocidade">4.0</span>
+</div>
+
+<canvas id="jogo" width="850" height="390"></canvas>
+
+<p id="mensagem">
+    Use as setas para andar e ESPAÇO para pular!
+</p>
+
+<button id="esquerda">⬅ Esquerda</button>
+<button id="pular">⬆ Pular</button>
+<button id="direita">Direita ➡</button>
+<button id="reiniciar">🔄 Reiniciar</button>
+
+<script>
+const canvas = document.getElementById("jogo");
+const ctx = canvas.getContext("2d");
+
+const chao = 325;
+const larguraMundo = canvas.width;
+let personagem, obstaculos, itens, teclas, saude, pontos, quadro, fim, invencivel;
+let velocidadeAtual = 4;
+let nivelAtual = 1;
+let proximoObstaculo = 70;
+let proximoItem = 100;
+let ultimoTempo = 0;
+let acumulador = 0;
+const PASSO = 1000 / 60;
+
+function iniciar() {
+    personagem = {
+        x: 60, y: chao - 42, largura: 30, altura: 42,
+        velocidadeY: 0, noChao: true
+    };
+    obstaculos = [];
+    itens = [];
+    teclas = {};
+    saude = 3;
+    pontos = 0;
+    quadro = 0;
+    fim = false;
+    invencivel = 0;
+    velocidadeAtual = 4;
+    nivelAtual = 1;
+    proximoObstaculo = 70;
+    proximoItem = 100;
+    ultimoTempo = 0;
+    acumulador = 0;
+
+    document.getElementById("mensagem").textContent =
+        "Vamos começar! Pule os obstáculos e pegue frutas e água.";
+    atualizarInfo();
+}
+
+function atualizarInfo() {
+    document.getElementById("saude").textContent = saude;
+    document.getElementById("pontos").textContent = pontos;
+    const nivelEl = document.getElementById("nivel");
+    const velocidadeEl = document.getElementById("velocidade");
+    if (nivelEl) nivelEl.textContent = nivelAtual;
+    if (velocidadeEl) velocidadeEl.textContent = velocidadeAtual.toFixed(1);
+}
+
+function pular() {
+    if (!fim && personagem.noChao) {
+        personagem.velocidadeY = -12.5;
+        personagem.noChao = false;
+    }
+}
+
+document.addEventListener("keydown", function(e) {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", " "].includes(e.key)) e.preventDefault();
+    teclas[e.key] = true;
+    if (e.key === " " || e.key === "ArrowUp") pular();
+});
+document.addEventListener("keyup", e => teclas[e.key] = false);
+window.addEventListener("blur", () => teclas = {});
+
+function ligarBotaoMovimento(id, tecla) {
+    const botao = document.getElementById(id);
+    const pressionar = e => {
+        e.preventDefault();
+        teclas[tecla] = true;
+        if (botao.setPointerCapture && e.pointerId !== undefined) {
+            try { botao.setPointerCapture(e.pointerId); } catch (_) {}
+        }
+    };
+    const soltar = e => {
+        if (e) e.preventDefault();
+        teclas[tecla] = false;
+    };
+    botao.addEventListener("pointerdown", pressionar);
+    ["pointerup", "pointerleave", "pointercancel", "lostpointercapture"].forEach(ev =>
+        botao.addEventListener(ev, soltar)
+    );
+}
+ligarBotaoMovimento("esquerda", "ArrowLeft");
+ligarBotaoMovimento("direita", "ArrowRight");
+document.getElementById("pular").addEventListener("click", pular);
+document.getElementById("reiniciar").addEventListener("click", iniciar);
+
+function colidiu(a, b) {
+    // Margem ligeiramente menor para a colisão parecer mais justa.
+    const margem = b.tipo === "obstaculo" ? 5 : 0;
+    return a.x + 4 < b.x + b.largura - margem &&
+           a.x + a.largura - 4 > b.x + margem &&
+           a.y + 4 < b.y + b.altura - margem &&
+           a.y + a.altura - 2 > b.y + margem;
+}
+
+function criarObjetos() {
+    if (quadro >= proximoObstaculo) {
+        const alto = Math.random() < 0.22 && nivelAtual >= 3;
+        obstaculos.push({
+            x: larguraMundo + 10,
+            y: chao - (alto ? 38 : 28),
+            largura: alto ? 34 : 28,
+            altura: alto ? 38 : 28,
+            emoji: alto ? "🌵" : (Math.random() < 0.5 ? "🪨" : "💦"),
+            tipo: "obstaculo"
+        });
+        // Intervalo diminui com o nível, mas mantém espaço mínimo para reagir.
+        proximoObstaculo = quadro + Math.max(34, 82 - nivelAtual * 4) + Math.random() * 22;
+    }
+
+    if (quadro >= proximoItem) {
+        itens.push({
+            x: larguraMundo + 10,
+            y: chao - 72 - Math.random() * 70,
+            largura: 25, altura: 25,
+            emoji: Math.random() < 0.5 ? "🍎" : "💧",
+            tipo: "item"
+        });
+        proximoItem = quadro + Math.max(48, 112 - nivelAtual * 3) + Math.random() * 30;
+    }
+}
+
+function desenharCenario() {
+    const gradiente = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradiente.addColorStop(0, "#dff8ff");
+    gradiente.addColorStop(1, "#bcebd7");
+    ctx.fillStyle = gradiente;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#8dd5a9";
+    ctx.beginPath();
+    ctx.arc(140, 310, 90, Math.PI, 0);
+    ctx.arc(380, 310, 120, Math.PI, 0);
+    ctx.arc(700, 310, 100, Math.PI, 0);
+    ctx.fill();
+
+    // Nuvens decorativas.
+    ctx.fillStyle = "rgba(255,255,255,.8)";
+    const nuvemX = (canvas.width - (quadro * velocidadeAtual * 0.18) % (canvas.width + 100));
+    [nuvemX, nuvemX - 360].forEach(x => {
+        ctx.beginPath();
+        ctx.arc(x, 62, 16, 0, Math.PI * 2);
+        ctx.arc(x + 20, 55, 22, 0, Math.PI * 2);
+        ctx.arc(x + 43, 64, 15, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    ctx.fillStyle = "#48a86c";
+    ctx.fillRect(0, chao, canvas.width, 65);
+    ctx.fillStyle = "#277d50";
+    ctx.fillRect(0, chao, canvas.width, 8);
+
+    // Marcas do chão dão sensação de velocidade.
+    ctx.fillStyle = "rgba(255,255,255,.35)";
+    for (let x = 0; x < canvas.width; x += 70) {
+        const deslocamento = (quadro * velocidadeAtual) % 70;
+        ctx.fillRect(x - deslocamento, chao + 25, 28, 4);
+    }
+}
+
+function desenharPersonagem() {
+    if (invencivel > 0 && Math.floor(invencivel / 5) % 2 === 0) return;
+    // Sombra.
+    ctx.fillStyle = "rgba(0,0,0,.14)";
+    ctx.beginPath();
+    ctx.ellipse(personagem.x + 15, chao + 2, personagem.noChao ? 18 : 11, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#f4a261";
+    ctx.fillRect(personagem.x, personagem.y, personagem.largura, personagem.altura);
+    ctx.fillStyle = "#264653";
+    ctx.fillRect(personagem.x + 5, personagem.y + 8, 5, 5);
+    ctx.fillRect(personagem.x + 20, personagem.y + 8, 5, 5);
+    ctx.fillStyle = "#13795b";
+    ctx.fillRect(personagem.x + 3, personagem.y + 19, 24, 9);
+    ctx.fillStyle = "#ffffff";
+    const passo = personagem.noChao && (teclas.ArrowLeft || teclas.ArrowRight) ? Math.sin(quadro * 0.45) * 3 : 0;
+    ctx.fillRect(personagem.x + 4, personagem.y + 30, 9, 12 + passo);
+    ctx.fillRect(personagem.x + 18, personagem.y + 30, 9, 12 - passo);
+}
+
+
+function desenharRetanguloArredondado(x, y, largura, altura, raio) {
+    if (typeof ctx.roundRect === "function") {
+        ctx.beginPath();
+        ctx.roundRect(x, y, largura, altura, raio);
+        return;
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + raio, y);
+    ctx.lineTo(x + largura - raio, y);
+    ctx.quadraticCurveTo(x + largura, y, x + largura, y + raio);
+    ctx.lineTo(x + largura, y + altura - raio);
+    ctx.quadraticCurveTo(x + largura, y + altura, x + largura - raio, y + altura);
+    ctx.lineTo(x + raio, y + altura);
+    ctx.quadraticCurveTo(x, y + altura, x, y + altura - raio);
+    ctx.lineTo(x, y + raio);
+    ctx.quadraticCurveTo(x, y, x + raio, y);
+    ctx.closePath();
+}
+
+function desenharObjetos() {
+    // Desenha cada objeto com contorno, brilho e uma base de contraste
+    // para que seja fácil identificá-lo mesmo em movimento.
+    obstaculos.forEach(o => {
+        const cx = o.x + o.largura / 2;
+        const cy = o.y + o.altura / 2;
+        ctx.save();
+
+        // Halo de alerta atrás do obstáculo.
+        ctx.shadowColor = "#d62828";
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = "#fff4f4";
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(o.largura, o.altura) * 0.72, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Contorno escuro e emoji ampliado.
+        ctx.font = "34px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#7f1d1d";
+        ctx.strokeText(o.emoji, cx, cy);
+        ctx.fillText(o.emoji, cx, cy);
+
+        // Rótulo de alerta.
+        ctx.font = "bold 10px Arial";
+        const label = "PERIGO";
+        const labelW = ctx.measureText(label).width + 10;
+        ctx.fillStyle = "#b91c1c";
+        desenharRetanguloArredondado(cx - labelW / 2, o.y - 16, labelW, 14, 5);
+        ctx.fill();
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(label, cx, o.y - 9);
+        ctx.restore();
+    });
+
+    itens.forEach(i => {
+        const cx = i.x + i.largura / 2;
+        const cy = i.y + i.altura / 2;
+        ctx.save();
+
+        // Medalhão amarelo destaca os itens que podem ser coletados.
+        ctx.shadowColor = "#f59e0b";
+        ctx.shadowBlur = 16;
+        ctx.fillStyle = "#fff7b2";
+        ctx.beginPath();
+        ctx.arc(cx, cy, 23 + Math.sin(quadro * 0.12) * 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#a16207";
+        ctx.stroke();
+        ctx.font = "31px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.strokeText(i.emoji, cx, cy);
+        ctx.fillText(i.emoji, cx, cy);
+
+        ctx.font = "bold 10px Arial";
+        const label = "PEGUE!";
+        const labelW = ctx.measureText(label).width + 10;
+        ctx.fillStyle = "#166534";
+        desenharRetanguloArredondado(cx - labelW / 2, i.y - 17, labelW, 14, 5);
+        ctx.fill();
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(label, cx, i.y - 10);
+        ctx.restore();
+    });
+
+    ctx.textAlign = "start";
+    ctx.textBaseline = "alphabetic";
+}
+
+function terminar(vitoria) {
+    fim = true;
+    document.getElementById("mensagem").textContent = vitoria
+        ? "🏆 Incrível! Você venceu a Aventura da Saúde!"
+        : "💚 Fim de jogo! Clique em Reiniciar e tente bater seu recorde.";
+    desenhar();
+    ctx.fillStyle = "rgba(10, 40, 30, .72)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 36px Arial";
+    ctx.fillText(vitoria ? "VOCÊ VENCEU!" : "FIM DE JOGO", canvas.width / 2, 155);
+    ctx.font = "bold 22px Arial";
+    ctx.fillText("Pontuação: " + pontos + "  •  Nível: " + nivelAtual, canvas.width / 2, 198);
+    ctx.font = "18px Arial";
+    ctx.fillText("Clique em Reiniciar para jogar novamente", canvas.width / 2, 235);
+    ctx.textAlign = "start";
+}
+
+function atualizar() {
+    if (fim) return;
+    quadro++;
+
+    // A dificuldade cresce gradualmente conforme a pontuação.
+    nivelAtual = 1 + Math.floor(pontos / 30);
+    velocidadeAtual = Math.min(11, 4 + (nivelAtual - 1) * 0.65);
+    atualizarInfo();
+
+    const velocidadeJogador = 4.5 + Math.min(1.5, (nivelAtual - 1) * 0.12);
+    if (teclas.ArrowLeft) personagem.x -= velocidadeJogador;
+    if (teclas.ArrowRight) personagem.x += velocidadeJogador;
+    personagem.x = Math.max(0, Math.min(canvas.width - personagem.largura, personagem.x));
+
+    personagem.y += personagem.velocidadeY;
+    personagem.velocidadeY += 0.62;
+    if (personagem.y + personagem.altura >= chao) {
+        personagem.y = chao - personagem.altura;
+        personagem.velocidadeY = 0;
+        personagem.noChao = true;
+    }
+
+    if (invencivel > 0) invencivel--;
+    criarObjetos();
+
+    obstaculos.forEach(o => {
+        o.x -= velocidadeAtual;
+        if (colidiu(personagem, o) && invencivel === 0) {
+            saude--;
+            invencivel = 75;
+            document.getElementById("mensagem").textContent =
+                "Ops! Desvie dos obstáculos! Você perdeu uma vida.";
+            atualizarInfo();
+            if (saude <= 0) terminar(false);
+        }
+    });
+
+    itens.forEach(i => {
+        i.x -= velocidadeAtual;
+        if (!i.coletado && colidiu(personagem, i)) {
+            i.coletado = true;
+            i.x = -100;
+            pontos += 10;
+            document.getElementById("mensagem").textContent = i.emoji === "💧"
+                ? "💧 Boa! A água ajuda a manter o corpo hidratado!"
+                : "🍎 Muito bem! Frutas fazem parte de uma alimentação saudável!";
+            atualizarInfo();
+            if (pontos >= 150) terminar(true);
+        }
+    });
+
+    obstaculos = obstaculos.filter(o => o.x > -60);
+    itens = itens.filter(i => i.x > -60);
+}
+
+function desenhar() {
+    desenharCenario();
+    desenharObjetos();
+    desenharPersonagem();
+
+    ctx.fillStyle = "#173b35";
+    ctx.font = "bold 16px Arial";
+    ctx.fillText("META: 150 PONTOS", 660, 28);
+    ctx.fillStyle = "#13795b";
+    ctx.fillText("NÍVEL " + nivelAtual, 18, 28);
+}
+
+function loop(tempo) {
+    if (!ultimoTempo) ultimoTempo = tempo;
+    const delta = Math.min(tempo - ultimoTempo, 50);
+    ultimoTempo = tempo;
+    acumulador += delta;
+
+    while (acumulador >= PASSO) {
+        atualizar();
+        acumulador -= PASSO;
+    }
+    desenhar();
+    requestAnimationFrame(loop);
+}
+
+iniciar();
+requestAnimationFrame(loop);
+</script>
+    <script src="pwa.js" defer></script>
+<section id="orientacao-docente" class="ecoplay-teacher-section"><div class="ecoplay-teacher-inner"><h2>Orientações para professores</h2><p><strong>Antes:</strong> apresente o tema e combine o objetivo da atividade.</p><p><strong>Durante:</strong> incentive a colaboração, a leitura cuidadosa e a explicação das escolhas.</p><p><strong>Depois:</strong> retome as respostas e peça aos estudantes que relacionem o que aprenderam com situações do cotidiano.</p><a class="ecoplay-button" href="index.html#para-professores">Ver sugestões pedagógicas</a></div></section>
+</body>
+</html>

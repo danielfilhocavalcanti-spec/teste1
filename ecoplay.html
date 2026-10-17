@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1b5e20">
+  <meta name="description" content="EcoPlay: um jogo educativo sobre meio ambiente, saúde e conhecimentos gerais.">
+  <title>EcoPlay 🌎</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: linear-gradient(135deg, #1b5e20, #81c784);
+      min-height: 100vh; padding: 22px 0; font-family: Arial, sans-serif;
+      display: flex; justify-content: center; align-items: center; color: white;
+    }
+    #app { width: 95%; max-width: 900px; text-align: center; }
+    h1 { font-size: 42px; margin-bottom: 14px; }
+    .install-area { margin: 0 0 18px; }
+    #installAppButton { background: #ffca28; color: #333; }
+    #installAppMessage { margin-top: 8px; font-size: 14px; min-height: 18px; }
+    #menu, .panel {
+      background: rgba(0,0,0,.5); padding: 30px; border-radius: 20px;
+    }
+    #menu p { font-size: 20px; margin: 15px; }
+    button {
+      border: none; border-radius: 12px; padding: 14px 24px; font-size: 18px;
+      cursor: pointer; background: #ffca28; color: #333; font-weight: bold;
+      touch-action: manipulation;
+    }
+  h1 {
+    color: black; }
+    button:hover { background: #ffd95a; }
+    button:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+    #jogoArea { display: none; }
+    #placar {
+      display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      background: rgba(0,0,0,.5); padding: 12px 20px; border-radius: 12px 12px 0 0;
+      font-size: 20px;
+    }
+    canvas {
+      width: 100%; height: auto; background: #7bd35a; border: 4px solid white;
+      display: block; margin: auto; touch-action: none;
+    }
+    #controles {
+      margin: 15px auto 0; display: grid; grid-template-columns: repeat(3, 64px);
+      justify-content: center; gap: 8px; user-select: none;
+    }
+    #controles button {
+      padding: 8px; width: 64px; height: 56px; background: #fff; font-size: 22px;
+      touch-action: none;
+    }
+    #baixo { grid-column: 2; }
+    #mensagem { margin-top: 15px; font-size: 18px; min-height: 24px; }
+    #perguntaArea { display:none; margin-top: 18px; }
+    #perguntaTexto { font-size: 20px; margin-bottom: 16px; }
+    .opcoes { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+    .opcoes button { min-width: 100px; }
+    #feedback { min-height:24px; margin:14px 0; font-weight:bold; }
+    .acoes { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin-top:16px; }
+    @media (max-width: 600px) {
+      h1 { font-size: 32px;}
+      #menu, .panel { padding: 22px 14px; }
+      #menu p { font-size: 18px; }
+      #placar { font-size: 16px; padding: 10px; }
+      button { font-size: 16px; padding: 12px 18px; }
+    }
+  
+
+/* Ajustes exclusivos desta página: preservam o style.css compartilhado e o jogo. */
+html { min-width: 0; }
+body { display:block; width:100%; min-width:0; min-height:100vh; margin:0; padding:0 0 28px; overflow-x:hidden; background:linear-gradient(135deg,#1b5e20,#81c784); }
+.ecoplay-site-header { position:relative; z-index:5; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; width:min(100% - 28px,1100px); margin:0 auto 22px; padding:14px 18px; border-radius:0 0 16px 16px; background:#fff; color:#174d2a; box-shadow:0 4px 16px rgba(0,0,0,.12); }
+.ecoplay-brand { display:inline-flex; align-items:center; min-width:105px; min-height:38px; color:#176b37; text-decoration:none; font-size:1.15rem; font-weight:800; }
+.ecoplay-brand::before { content:"🌱 EcoPlay"; }
+.ecoplay-nav { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:8px 14px; }
+.ecoplay-site-header .ecoplay-nav a { color:#176b37; text-decoration:none; font-weight:700; padding:7px 4px; }
+.ecoplay-site-header .ecoplay-nav a:hover,.ecoplay-site-header .ecoplay-nav a:focus-visible { text-decoration:underline; }
+.ecoplay-site-header #installAppButton { flex:0 0 auto; padding:10px 14px; font-size:15px; background:#ffca28; color:#333; }
+.ecoplay-install-message { flex-basis:100%; margin:0; color:#285438; font-size:13px; text-align:right; }
+.ecoplay-skip-link { position:absolute; top:-100px; left:12px; z-index:100; padding:10px 14px; background:#fff; color:#174d2a; border-radius:8px; }
+.ecoplay-skip-link:focus { top:12px; }
+#app { width:min(100% - 28px,900px); max-width:900px; margin:0 auto; text-align:center; }
+#app > h1 { color:#fff; font-size:clamp(2rem,5vw,2.8rem); line-height:1.15; margin:0 0 18px; overflow-wrap:anywhere; }
+#menu,#jogoArea,#jogoArea .panel { width:100%; min-width:0; border:1px solid rgba(255,255,255,.22); box-shadow:0 10px 28px rgba(0,0,0,.14); }
+#menu { padding:clamp(18px,4vw,32px); }
+#menu p { line-height:1.5; }
+#jogoArea { margin:0 auto; }
+#placar { width:100%; align-items:center; justify-content:space-around; border-radius:14px 14px 0 0; line-height:1.4; }
+#jogo { display:block; width:100%; height:auto; aspect-ratio:8 / 5; max-width:100%; border-width:3px; }
+#controles { margin-bottom:6px; }
+#mensagem,#feedback { line-height:1.5; overflow-wrap:anywhere; }
+#perguntaArea { margin-top:16px; text-align:center; }
+#perguntaTexto { line-height:1.45; overflow-wrap:anywhere; }
+.opcoes button { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+.acoes button { min-height:44px; }
+#jogoArea button:disabled { opacity:.65; cursor:not-allowed; }
+@media (max-width:640px) {
+ body { padding-bottom:18px; }
+ .ecoplay-site-header { width:100%; margin-bottom:18px; padding:12px 14px; border-radius:0 0 14px 14px; justify-content:center; }
+ .ecoplay-brand { justify-content:center; }
+ .ecoplay-nav { width:100%; gap:6px 12px; }
+ .ecoplay-site-header .ecoplay-nav a { font-size:14px; }
+ .ecoplay-site-header #installAppButton { width:auto; min-height:42px; }
+ .ecoplay-install-message { text-align:center; }
+ #app { width:calc(100% - 20px); }
+ #menu,#jogoArea .panel { padding:18px 12px; }
+ #menu p { margin:10px 0; }
+ #placar { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; font-size:14px; padding:10px 8px; }
+ #placar span:last-child { grid-column:1 / -1; }
+ #controles { grid-template-columns:repeat(3,minmax(48px,60px)); gap:7px; }
+ #controles button { width:100%; height:52px; padding:5px; }
+ .opcoes { display:grid; grid-template-columns:1fr; }
+ .opcoes button { width:100%; min-width:0; text-align:left; }
+ .acoes { display:grid; grid-template-columns:1fr; }
+ .acoes button { width:100%; }
+}
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  
+#placar span { background:rgba(255,255,255,.12); border-radius:9px; padding:6px 10px; }
+#placar strong { color:#ffdf62; }
+#jogo { border-radius:0 0 12px 12px; box-shadow:0 8px 22px rgba(0,0,0,.2); }
+#mensagem { background:rgba(0,0,0,.28); border-radius:10px; padding:10px; }
+#pausarBtn { background:#d9efff; color:#153c5a; }
+@media(max-width:640px) { #placar span { padding:5px 6px; } }
+
+  </style>
+    <link rel="stylesheet" href="style.css">
+<style id="ecoplay-improvements">.ecoplay-teacher-section{padding:clamp(28px,5vw,56px) 5%;background:#eef8ef;color:#174d2a}.ecoplay-teacher-inner{width:min(100%,1050px);margin:0 auto}.ecoplay-teacher-section h2{margin:0 0 12px;color:#176b37}.ecoplay-teacher-section p{line-height:1.65}.ecoplay-teacher-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}.ecoplay-teacher-grid article{min-width:0;padding:20px;background:#fff;border:1px solid #d4e8d7;border-radius:14px;box-shadow:0 4px 14px rgba(20,80,35,.06)}.ecoplay-teacher-grid h3{margin-top:0;line-height:1.35}.ecoplay-teacher-note{padding:14px 16px;border-left:4px solid #248346;background:#fff;border-radius:6px}.ecoplay-teacher-section .ecoplay-button{display:inline-block;padding:11px 18px;border-radius:9px;background:#176b37;color:#fff;text-decoration:none;font-weight:700}.ecoplay-game-intro{max-width:900px;margin:18px auto;padding:22px;border-radius:14px;background:#f0f8f0;color:#174d2a;line-height:1.65}.ecoplay-game-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.ecoplay-game-card{padding:20px;border:1px solid #d4e8d7;border-radius:14px;background:#fff;color:#174d2a}.ecoplay-game-card h2{margin-top:0;font-size:1.25rem}.ecoplay-game-card a{display:inline-block;margin-top:8px;color:#176b37;font-weight:700}@media(max-width:700px){.ecoplay-teacher-grid,.ecoplay-game-cards{grid-template-columns:1fr}.ecoplay-teacher-grid article,.ecoplay-game-card{padding:17px}}</style>
+</head>
+<body>
+<div class="ecoplay-site-header">
+  <a class="ecoplay-brand" href="index.html" aria-label="EcoPlay - página inicial"></a>
+  <nav class="ecoplay-nav" aria-label="Navegação principa">
+    <a href="index.html">Educação escolar</a>
+    <a href="meio_ambiente.html">Meio ambiente</a>
+    <a href="saude.html">Saúde</a>
+    <a href="diversao.html">Jogos</a>
+  
+<a href="index.html#para-professores">Para professores</a>
+</nav>
+  <button class="install-button" id="installAppButton" type="button">⬇️ Baixar app</button>
+  <p class="ecoplay-install-message" id="installAppMessage" aria-live="polite"></p>
+</div>
+<a class="ecoplay-skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
+<div id="app">
+  <h1 id="conteudo-principal">🌎 EcoPlay</h1>
+<section id="menu">
+    <p>🌱 Cuide do planeta!</p>
+    <p>❤️ Aprenda hábitos saudáveis!</p>
+    <p>📚 Teste seus conhecimentos!</p>
+    <button id="jogarBtn" type="button">▶️ JOGAR</button>
+  </section>
+
+  <section id="jogoArea">
+    <div id="placar">
+      <span>⭐ Pontos: <strong id="pontos">0</strong></span>
+      <span>🎮 Fase: <strong id="fase">1</strong>/3</span>
+      <span>📦 Restam: <strong id="restantes">10</strong></span>
+      <span>✨ Combo: <strong id="combo">x0</strong></span>
+      <span>❤️ Vidas: <strong id="vidas">❤️❤️❤️</strong></span>
+    </div>
+    <canvas id="jogo" width="800" height="500" aria-label="Área do jogo EcoPlay"></canvas>
+    <div id="controles" aria-label="Controles direcionais">
+      <div></div><button type="button" data-key="ArrowUp" aria-label="Mover para cima">⬆️</button><div></div>
+      <button type="button" data-key="ArrowLeft" aria-label="Mover para esquerda">⬅️</button>
+      <button id="baixo" type="button" data-key="ArrowDown" aria-label="Mover para baixo">⬇️</button>
+      <button type="button" data-key="ArrowRight" aria-label="Mover para direita">➡️</button>
+    </div>
+    <p id="mensagem" aria-live="polite">Use as setas ou WASD para movimentar 🙂</p>
+
+    <section id="perguntaArea" class="panel">
+      <p id="perguntaTexto"></p>
+      <div id="opcoes" class="opcoes"></div>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+    <div class="acoes">
+      <button id="pausarBtn" type="button">⏸️ Pausar</button>
+      <button id="reiniciarBtn" type="button">🔄 Reiniciar</button>
+      <button id="menuBtn" type="button">🏠 Menu</button>
+    </div>
+  </section>
+</div>
+
+<script>
+if (window.CanvasRenderingContext2D && !CanvasRenderingContext2D.prototype.roundRect) {
+ CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.beginPath();this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);this.closePath();return this;};
+}
+</script>
+
+<script>
+(() => {
+"use strict";
+const canvas=document.getElementById("jogo"),ctx=canvas.getContext("2d"),$=id=>document.getElementById(id);
+let pontos=0,fase=1,vidas=3,combo=0,jogoTerminado=false,jogoIniciado=false,pausado=false,animationId=null,teclas=Object.create(null),objetos=[],perguntaAtual=0,perguntasRespondidas=false,tempo=0,particulas=[];
+const jogador={x:380,y:230,tamanho:30,velocidade:4.5,invencivel:0};
+const perguntas=[
+{texto:"Qual atitude ajuda o meio ambiente?",opcoes:["A) Jogar lixo no chão","B) Reciclar","C) Desperdiçar água"],correta:1,explicacao:"Reciclar ajuda a reduzir o lixo e reaproveitar materiais."},
+{texto:"Qual hábito ajuda a manter o corpo hidratado?",opcoes:["A) Beber água","B) Nunca beber água","C) Trocar água por refrigerante sempre"],correta:0,explicacao:"Beber água regularmente ajuda o corpo a funcionar bem."},
+{texto:"Qual atitude economiza energia?",opcoes:["A) Deixar luzes acesas sem necessidade","B) Abrir a geladeira por muito tempo","C) Apagar a luz ao sair"],correta:2,explicacao:"Apagar as luzes quando não são necessárias evita desperdício."}];
+function atualizarPlacar(){$("pontos").textContent=pontos;$("fase").textContent=fase;$("restantes").textContent=fase===3?Math.max(0,perguntas.length-perguntaAtual):objetos.length;$("combo").textContent="x"+combo;$("vidas").textContent="❤️".repeat(vidas)||"0";}
+function posicaoLivre(){let x,y,n=0,sobreposto;do{x=52+Math.random()*(canvas.width-104);y=82+Math.random()*(canvas.height-130);sobreposto=Math.abs(x-jogador.x)<72&&Math.abs(y-jogador.y)<72;n++;}while(sobreposto&&n<40);return{x,y};}
+function criarObjetos(){let tipos=[];if(fase===1)tipos=Array(10).fill("lixo");if(fase===2)tipos=[...Array(5).fill("fruta"),...Array(3).fill("agua"),...Array(3).fill("ruim")];objetos=tipos.map((tipo,id)=>({...posicaoLivre(),tamanho:32,tipo,fase:Math.random()*Math.PI*2,id}));atualizarPlacar();}
+function tituloFase(){return{1:"🌱 FASE 1 • CUIDE DO PLANETA",2:"❤️ FASE 2 • CUIDE DA SAÚDE",3:"📚 FASE 3 • DESAFIO DO SABER"}[fase];}
+function desenharFundo(){let g=ctx.createLinearGradient(0,0,0,canvas.height);if(fase===2){g.addColorStop(0,"#d6f2ff");g.addColorStop(1,"#7bcf9a");}else{g.addColorStop(0,"#c9f7a5");g.addColorStop(1,"#4fba69");}ctx.fillStyle=g;ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="rgba(255,255,255,.14)";for(let i=0;i<7;i++){ctx.beginPath();ctx.ellipse((i*145+55)%canvas.width,(i*83+120)%canvas.height,45,20,-.3,0,Math.PI*2);ctx.fill();}ctx.font="42px Arial";ctx.fillText("🌳",14,78);ctx.fillText("🌳",730,100);ctx.fillText("🌳",22,475);ctx.fillText("🌳",730,470);ctx.fillStyle="#fff";ctx.fillRect(12,12,470,34);ctx.fillStyle="#155b2d";ctx.font="bold 18px Arial";ctx.fillText(tituloFase(),22,35);}
+function desenharJogador(){let x=jogador.x+jogador.tamanho/2,y=jogador.y+jogador.tamanho/2;ctx.save();ctx.globalAlpha=jogador.invencivel>0&&Math.floor(tempo/5)%2===0?.4:1;ctx.shadowColor="#075985";ctx.shadowBlur=13;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,24,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.lineWidth=3;ctx.strokeStyle="#075985";ctx.stroke();ctx.font="31px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("🙂",x,y+1);ctx.restore();ctx.textAlign="left";ctx.textBaseline="alphabetic";}
+function desenharObjetos(){const d={lixo:{emoji:"🗑️",cor:"#176b37",nome:"RECICLE"},fruta:{emoji:"🍎",cor:"#b91c1c",nome:"+10 PTS"},agua:{emoji:"💧",cor:"#075985",nome:"+10 PTS"},ruim:{emoji:"🍔",cor:"#92400e",nome:"ATENÇÃO"}};objetos.forEach(o=>{let a=d[o.tipo],x=o.x+15,y=o.y+15+Math.sin(tempo*.06+o.fase)*3;ctx.save();ctx.shadowColor=a.cor;ctx.shadowBlur=12;ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,25,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.lineWidth=3;ctx.strokeStyle=a.cor;ctx.stroke();ctx.font="30px Arial";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(a.emoji,x,y+1);ctx.font="bold 11px Arial";let w=ctx.measureText(a.nome).width+12;ctx.fillStyle=a.cor;ctx.beginPath();ctx.roundRect(x-w/2,y+27,w,17,5);ctx.fill();ctx.fillStyle="#fff";ctx.fillText(a.nome,x,y+35.5);ctx.restore();});ctx.textAlign="left";ctx.textBaseline="alphabetic";}
+function criarParticulas(x,y,c){for(let i=0;i<12;i++)particulas.push({x,y,vx:(Math.random()-.5)*5,vy:(Math.random()-.5)*5,vida:24,c});}
+function desenharParticulas(){particulas=particulas.filter(p=>p.vida>0);particulas.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vida--;ctx.globalAlpha=p.vida/24;ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill();});ctx.globalAlpha=1;}
+function moverJogador(){let dx=0,dy=0;if(teclas.ArrowUp||teclas.w||teclas.W)dy--;if(teclas.ArrowDown||teclas.s||teclas.S)dy++;if(teclas.ArrowLeft||teclas.a||teclas.A)dx--;if(teclas.ArrowRight||teclas.d||teclas.D)dx++;if(dx&&dy){dx*=.7071;dy*=.7071;}jogador.x=Math.max(2,Math.min(canvas.width-jogador.tamanho-2,jogador.x+dx*jogador.velocidade));jogador.y=Math.max(52,Math.min(canvas.height-jogador.tamanho-2,jogador.y+dy*jogador.velocidade));if(jogador.invencivel>0)jogador.invencivel--;}
+function colisao(a,b){return a.x+4<b.x+b.tamanho-2&&a.x+a.tamanho-4>b.x+2&&a.y+4<b.y+b.tamanho-2&&a.y+a.tamanho-4>b.y+2;}
+function verificarColisoes(){for(let i=objetos.length-1;i>=0;i--){let o=objetos[i];if(!colisao(jogador,o))continue;if(o.tipo==="ruim"){pontos=Math.max(0,pontos-5);combo=0;if(jogador.invencivel===0){vidas--;jogador.invencivel=70;$("mensagem").textContent="🍔 Cuidado! Você perdeu uma vida e 5 pontos. Busque equilíbrio!";}else $("mensagem").textContent="🍔 Atenção: variedade e equilíbrio são importantes!";criarParticulas(o.x+15,o.y+15,"#ef4444");}else{combo++;let bonus=combo%4===0?5:0;pontos+=10+bonus;criarParticulas(o.x+15,o.y+15,o.tipo==="lixo"?"#166534":"#facc15");$("mensagem").textContent=o.tipo==="lixo"?"♻️ Resíduo recolhido! "+(bonus?"Combo de 4: +5 pontos extras!":"Continue limpando o ambiente!"):o.tipo==="fruta"?"🍎 Boa escolha! "+(bonus?"Combo de 4: +5 pontos extras!":"Uma alimentação variada é importante!"):"💧 Muito bem! "+(bonus?"Combo de 4: +5 pontos extras!":"Hidratação é importante!");}objetos.splice(i,1);}if(vidas<=0)return finalizarJogo(false);atualizarPlacar();if(!objetos.length){if(fase===1){fase=2;jogador.x=380;jogador.y=230;combo=0;criarObjetos();$("mensagem").textContent="🎉 Fase 1 concluída! Agora escolha hábitos saudáveis.";}else if(fase===2){fase=3;jogador.x=380;jogador.y=230;objetos=[];atualizarPlacar();abrirPergunta();}}}
+function desenhar(){desenharFundo();if(fase<3)desenharObjetos();desenharParticulas();desenharJogador();if(pausado){ctx.fillStyle="rgba(0,0,0,.62)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign="center";ctx.fillStyle="#fff";ctx.font="bold 44px Arial";ctx.fillText("⏸ JOGO PAUSADO",canvas.width/2,canvas.height/2);ctx.font="20px Arial";ctx.fillText("Pressione Continuar para voltar",canvas.width/2,canvas.height/2+42);ctx.textAlign="left";}}
+function loop(){animationId=null;if(!jogoIniciado||jogoTerminado||pausado||fase===3)return;tempo++;moverJogador();verificarColisoes();desenhar();if(jogoIniciado&&!jogoTerminado&&!pausado&&fase<3)animationId=requestAnimationFrame(loop);}
+function iniciarJogo(){$("menu").style.display="none";$("jogoArea").style.display="block";$("perguntaArea").style.display="none";jogoIniciado=true;jogoTerminado=false;pausado=false;$("pausarBtn").textContent="⏸️ Pausar";desenhar();if(animationId===null&&fase<3)animationId=requestAnimationFrame(loop);}
+function abrirPergunta(){if(perguntaAtual>=perguntas.length)return finalizarJogo(true);if(animationId!==null){cancelAnimationFrame(animationId);animationId=null;}let p=perguntas[perguntaAtual];$("perguntaArea").style.display="block";$("perguntaTexto").textContent=`Pergunta ${perguntaAtual+1}/${perguntas.length}: ${p.texto}`;$("feedback").textContent="";let area=$("opcoes");area.replaceChildren();p.opcoes.forEach((t,i)=>{let b=document.createElement("button");b.type="button";b.textContent=t;b.addEventListener("click",()=>responder(i));area.appendChild(b);});$("mensagem").textContent="Escolha a resposta correta para continuar.";atualizarPlacar();}
+function responder(i){if(perguntasRespondidas)return;let p=perguntas[perguntaAtual];if(i===p.correta){pontos+=20;$("feedback").textContent="✅ Correto! "+p.explicacao;$("feedback").style.color="#c8ffbf";perguntasRespondidas=true;$("opcoes").querySelectorAll("button").forEach(b=>b.disabled=true);atualizarPlacar();setTimeout(()=>{perguntaAtual++;perguntasRespondidas=false;if(perguntaAtual>=perguntas.length)finalizarJogo(true);else abrirPergunta();},900);}else{pontos=Math.max(0,pontos-5);$("feedback").textContent="❌ Ainda não! Tente outra opção. (−5 pontos)";$("feedback").style.color="#ffe082";atualizarPlacar();}}
+function finalizarJogo(vitoria=true){jogoTerminado=true;jogoIniciado=false;pausado=false;if(animationId!==null)cancelAnimationFrame(animationId);animationId=null;$("perguntaArea").style.display="none";desenharFundo();ctx.fillStyle="rgba(0,0,0,.82)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign="center";ctx.fillStyle="#fff";ctx.font="bold 48px Arial";ctx.fillText(vitoria?"🏆 PARABÉNS!":"💚 FIM DE JOGO",canvas.width/2,165);ctx.font="25px Arial";ctx.fillText(vitoria?"Você completou o EcoPlay!":"Suas vidas acabaram.",canvas.width/2,220);ctx.font="22px Arial";ctx.fillText("🌎 Cuidou do planeta!",canvas.width/2,275);ctx.fillText("❤️ Aprendeu sobre saúde!",canvas.width/2,320);ctx.fillText("📚 Testou seus conhecimentos!",canvas.width/2,365);ctx.font="bold 30px Arial";ctx.fillText("⭐ Pontuação: "+pontos,canvas.width/2,425);ctx.textAlign="left";$("mensagem").textContent=vitoria?"Parabéns! Você concluiu todas as fases. Toque em Reiniciar para jogar novamente.":"Fim de jogo. Reinicie para tentar outra vez.";atualizarPlacar();}
+function reiniciar(){if(animationId!==null)cancelAnimationFrame(animationId);animationId=null;pontos=0;fase=1;vidas=3;combo=0;jogoTerminado=false;pausado=false;jogoIniciado=true;perguntaAtual=0;perguntasRespondidas=false;tempo=0;particulas=[];teclas=Object.create(null);jogador.x=380;jogador.y=230;jogador.invencivel=0;$("menu").style.display="none";$("jogoArea").style.display="block";$("perguntaArea").style.display="none";$("pausarBtn").textContent="⏸️ Pausar";$("mensagem").textContent="Use as setas ou WASD para movimentar 🙂";criarObjetos();atualizarPlacar();desenhar();animationId=requestAnimationFrame(loop);}
+function pausarJogo(){if(!jogoIniciado||jogoTerminado||fase===3)return;pausado=!pausado;teclas=Object.create(null);$("pausarBtn").textContent=pausado?"▶️ Continuar":"⏸️ Pausar";if(pausado){if(animationId!==null)cancelAnimationFrame(animationId);animationId=null;desenhar();}else if(animationId===null)animationId=requestAnimationFrame(loop);}
+function voltarMenu(){if(animationId!==null)cancelAnimationFrame(animationId);animationId=null;jogoIniciado=false;jogoTerminado=true;pausado=false;teclas=Object.create(null);$("jogoArea").style.display="none";$("menu").style.display="block";}
+document.addEventListener("keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key))e.preventDefault();teclas[e.key]=true;if(e.key.toLowerCase()==="p"&&jogoIniciado)pausarJogo();});document.addEventListener("keyup",e=>teclas[e.key]=false);window.addEventListener("blur",()=>teclas=Object.create(null));
+document.querySelectorAll("#controles button[data-key]").forEach(b=>{let k=b.dataset.key,down=e=>{e.preventDefault();teclas[k]=true;try{b.setPointerCapture(e.pointerId);}catch(_){}},up=e=>{e.preventDefault();teclas[k]=false;};b.addEventListener("pointerdown",down);["pointerup","pointerleave","pointercancel","lostpointercapture"].forEach(ev=>b.addEventListener(ev,up));b.addEventListener("contextmenu",e=>e.preventDefault());});
+$("jogarBtn").addEventListener("click",iniciarJogo);$("reiniciarBtn").addEventListener("click",reiniciar);$("menuBtn").addEventListener("click",voltarMenu);$("pausarBtn").addEventListener("click",pausarJogo);atualizarPlacar();
+if("serviceWorker"in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(()=>$("installAppMessage").textContent="O jogo funciona no navegador; não foi possível ativar o modo offline."));
+})();
+let eventoInstalacao=null;const botao=document.getElementById("installAppButton"),mensagemInstalacao=document.getElementById("installAppMessage");window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();eventoInstalacao=e;botao.hidden=false;mensagemInstalacao.textContent="Seu aplicativo está pronto para instalação.";});botao.addEventListener("click",async()=>{if(eventoInstalacao){eventoInstalacao.prompt();const r=await eventoInstalacao.userChoice;mensagemInstalacao.textContent=r.outcome==="accepted"?"Instalação aceita!":"Instalação cancelada.";eventoInstalacao=null;}else mensagemInstalacao.textContent="Se a instalação estiver disponível, abra o menu do navegador e selecione Instalar app ou Adicionar à tela inicial.";});window.addEventListener("appinstalled",()=>{mensagemInstalacao.textContent="Aplicativo instalado com sucesso!";botao.hidden=true;});
+</script>
+
+    <script src="pwa.js" defer></script>
+<section id="orientacao-docente" class="ecoplay-teacher-section">
+  <div class="ecoplay-teacher-inner">
+    <h2>Orientações para professores</h2>
+    <p><strong>Antes:</strong> apresente o tema e combine o objetivo da atividade.</p>
+    <p><strong>Durante:</strong> incentive a colaboração, a leitura cuidadosa e a explicação das escolhas.</p>
+    <p><strong>Depois:</strong> retome as respostas e peça aos estudantes que relacionem o que aprenderam com situações do cotidiano.</p>
+    <a class="ecoplay-button" href="para_professores.html">Ver sugestões pedagógicas</a>
+  </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <title>Para professores</title>
+
+  <style>
+    .ecoplay-teacher-section { width: min(100% - 28px, 1120px); margin: 0 auto; padding: clamp(18px, 4vw, 40px) 0; }
+    .ecoplay-teacher-section .titulo { width: 100%; max-width: 100%; margin: 0 auto; }
+    .ecoplay-teacher-section .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 245px), 1fr)); gap: 16px; width: 100%; }
+    .ecoplay-teacher-section .card { min-width: 0; overflow-wrap: anywhere; }
+    .ecoplay-teacher-section p { max-width: 78ch; }
+    @media (max-width: 600px) {
+      .ecoplay-teacher-section { width: calc(100% - 24px); padding: 18px 0 28px; }
+      .ecoplay-teacher-section .cards { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+      .ecoplay-teacher-section .card { padding: 18px; }
+      header { padding: 16px 12px; }
+      header h1 { font-size: clamp(1.5rem, 7vw, 2rem); margin: 0; }
+      .install-area { width: 100%; text-align: center; }
+    }
+  </style>
+
+</head>
+<body>
+     <header>
+       <h1>Professores em ação</h1>
+     <nav>
+        <a href="index.html">Educação escolar</a>
+        <a href="meio_ambiente.html">Meio ambiente</a>
+        <a href="saude.html">Saúde</a>
+        <a href="diversao.html">Diversão</a>   
+        <a href="para_professores.html">Para professores</a>
+     </nav>
+        <div class="install-area">
+                <button class="install-button" id="installAppButton" type="button">⬇️ Baixar app</button>
+                <p class="install-message" id="installAppMessage" aria-live="polite"></p>
+            </div>
+      </header>
+  <section id="para-professores" class="ecoplay-teacher-section" aria-labelledby="titulo-professores">
+  <div class="titulo">
+    <p class="ecoplay-eyebrow">Apoio pedagógico</p>
+    <h1 id="titulo-professores">Para professores</h1>
+    <p>Utilize o Educa+ como recurso complementar às aulas. Os conteúdos e jogos podem apoiar revisões, conversas em grupo e atividades interdisciplinares sobre educação escolar, saúde e meio ambiente.</p>
+    <div class="cards">
+      <div class="card">
+      <div class="emoji">🎯</div>
+      <h3> Objetivos de aprendizagem</h3>
+      <p>Revisar conceitos, desenvolver o raciocínio, estimular a participação e relacionar o conteúdo digital a situações do cotidiano.</p>
+    </div>
+      <div class="card">
+        <div class="emoji">🧑‍🏫</div>
+        <h3> Sugestão de uso em aula</h3>
+        <p>Apresente o tema, convide a turma a explorar um jogo e depois promova uma conversa sobre as respostas, estratégias e aprendizados.</p>
+      </div>
+      <div class="card">
+        <div class="emoji">♿</div>
+        <h3> Participação inclusiva</h3>
+        <p>Ofereça alternativas para quem precisar, permita atividades em duplas ou pequenos grupos e valorize a explicação do raciocínio, não apenas a pontuação.</p>
+      </div>
+    </div>
+    <div class="card">
+    <p class="ecoplay-teacher-note"><strong>Importante:</strong> o Educa+ é um recurso complementar; adapte as atividades à faixa etária, aos objetivos da aula e às necessidades da turma.</p>
+    <a class="ecoplay-button" href="diversao.html">Explorar os jogos</a>
+    </div>
+  </div>
+</section>
+ 
+ <script src="pwa.js" defer></script>
+</body>
+</html>
