@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educa+| Educação Escolar, Saúde e Meio Ambiente</title>
+    <meta name="theme-color" content="#108616">
+  <link rel="stylesheet" href="style.css">
+    <style>
+      /* Ajustes somente para telas pequenas; style.css permanece intacto. */
+      @media (max-width: 600px) {
+        header { padding: 12px 4%; }
+        .topo { gap: 12px; }
+        .logo { font-size: 21px; line-height: 1.3; overflow-wrap: anywhere; }
+        nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+        nav a { margin: 3px; font-size: 14px; }
+        .install-area { margin-top: 12px; }
+        .app { min-height: auto; padding: 42px 5%; }
+        .app h1 { font-size: clamp(28px, 8vw, 36px); line-height: 1.2; }
+        .app p { font-size: 17px; line-height: 1.55; }
+        section { padding: 42px 5%; }
+        .titulo { padding: 12px; overflow-wrap: anywhere; }
+        .titulo h2 { font-size: clamp(24px, 6.5vw, 30px); line-height: 1.25; }
+        .titulo p, .card p { font-size: 16px; line-height: 1.55; }
+        .cards { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+        .card { min-width: 0; padding: 20px; overflow-wrap: anywhere; }
+        .tecnica li { overflow-wrap: anywhere; }
+      }
+    </style>
+    <link rel="manifest" href="manifest.json">
+<style id="ecoplay-improvements">.ecoplay-teacher-section{padding:clamp(28px,5vw,56px) 5%;background:#eef8ef;color:#174d2a}.ecoplay-teacher-inner{width:min(100%,1050px);margin:0 auto}.ecoplay-teacher-section h2{margin:0 0 12px;color:#176b37}.ecoplay-teacher-section p{line-height:1.65}.ecoplay-teacher-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}.ecoplay-teacher-grid article{min-width:0;padding:20px;background:#fff;border:1px solid #d4e8d7;border-radius:14px;box-shadow:0 4px 14px rgba(20,80,35,.06)}.ecoplay-teacher-grid h3{margin-top:0;line-height:1.35}.ecoplay-teacher-note{padding:14px 16px;border-left:4px solid #248346;background:#fff;border-radius:6px}.ecoplay-teacher-section .ecoplay-button{display:inline-block;padding:11px 18px;border-radius:9px;background:#176b37;color:#fff;text-decoration:none;font-weight:700}.ecoplay-game-intro{max-width:900px;margin:18px auto;padding:22px;border-radius:14px;background:#f0f8f0;color:#174d2a;line-height:1.65}.ecoplay-game-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}.ecoplay-game-card{padding:20px;border:1px solid #d4e8d7;border-radius:14px;background:#fff;color:#174d2a}.ecoplay-game-card h2{margin-top:0;font-size:1.25rem}.ecoplay-game-card a{display:inline-block;margin-top:8px;color:#176b37;font-weight:700}@media(max-width:700px){.ecoplay-teacher-grid,.ecoplay-game-cards{grid-template-columns:1fr}.ecoplay-teacher-grid article,.ecoplay-game-card{padding:17px}}</style>
+</head>
+<body>
+<a class="ecoplay-skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
+      <header>
+    <h1>Como está a sua Educação escolar?</h1>
+    
+    <nav>
+        <a href="index.html">Educação escolar</a>
+        <a href="meio_ambiente.html">Meio ambiente</a>
+        <a href="saude.html">Saúde</a>
+        <a href="diversao.html">Diversão</a>   
+        <a href="para_professores.html">Para professores</a>
+     </nav>
+        <div class="install-area">
+                <button class="install-button" id="installAppButton" type="button">⬇️ Baixar app</button>
+                <p class="install-message" id="installAppMessage" aria-live="polite"></p>
+            </div>
+      </header>
+            <section id="conteudo-principal">
+                <div class="titulo">
+                    <h1>
+                    o que é Educação escolar?
+                   </h1>
+                    <p>A educação escolar é essencial para o desenvolvimento dos alunos, mas muitos enfrentam 
+                      problemas como falta de recursos, apoio pedagógico e bullying. Este projeto busca soluções
+                       para promover um ambiente escolar mais seguro, inclusivo e acolhedor para todos.
+                </p>
+                <a href="#apoio" class="botao">Conheça o projeto</a>
+               </div>
+            </section>
+
+            <section id="apoio">
+                <div class="titulo">
+                    <h2>
+                     🎓 Apoio escolar
+                   </h2>
+
+                    <p>O apoio escolar reúne estratégias para ajudar os alunos na 
+                      aprendizagem, como reforço, orientação pedagógica e suporte 
+                      emocional, promovendo a inclusão e o desenvolvimento de todos.
+                </p>
+               </div>
+              <div class="cards">
+                <div class="card">
+                    <div class="emoji">📖</div>
+                    <h3> Reforço escolar</h3>
+                    <p>O reforço escolar ajuda os alunos a superar dificuldades nas 
+                      disciplinas, fortalecer o aprendizado, melhorar o desempenho e 
+                      aumentar a confiança em suas habilidades.</p>
+                </div>
+                <div class="card">
+                    <div class="emoji">🧭</div>
+                    <h3>Orientação pedagógica</h3>
+                    <p>A orientação pedagógica apoia professores e alunos, buscando melhorar o ensino e a aprendizagem por meio de estratégias eficazes e inclusivas.</p>
+                </div>
+                <div class="card">
+                    <div class="emoji">📝</div>
+                    <h3> Suporte emocional</h3>
+                    <p>O suporte emocional na escola promove o bem-estar dos alunos, oferecendo um ambiente acolhedor que favorece a expressão das emoções, a autoestima e a resiliência.</p>
+                </div>
+                <div class="card">
+                    <div class="emoji">📚</div>
+                    <h3>Atividades extracurriculares</h3>
+                    <p>As atividades extracurriculares complementam o aprendizado, desenvolvendo habilidades sociais, criatividade, liderança e trabalho em equipe por meio de esportes, artes e projetos.</p>
+                </div>
+               </div>
+            </section>
+            <section id="estudo">
+              <div class="titulo">
+                <h2>🧠Técnicas de Estudo</h2>
+                <p>As técnicas de estudo são estratégias que facilitam a aprendizagem e a memorização, como resumos, mapas mentais, revisões e organização do tempo.</p>
+              </div>
+              <ul class="tecnica">
+                <div class="tecnica">
+                  <li>📌 Organização do tempo</li>
+                </div>
+                <div class="tecnica">
+                  <li>📌 Criação de resumos</li>
+                </div>
+                <div class="tecnica">
+                  <li>📌 Utilização de mapas mentais</li>
+                </div>
+                <div class="tecnica">
+                  <li>📌 Prática de exercícios</li>
+                </div>
+                <div class="tecnica">
+                  <li>📌 Revisão periódica</li>
+                </div>
+                <div class="tecnica">
+                  <li>📌 Aplicação de métodos ativos de aprendizagem</li>
+                </div>
+              </ul>
+            </section>
+            <section id="motivacao">
+              <div class="titulo">
+                <h2>🤝Inclusão e Respeito</h2>
+                <p>A inclusão e o respeito na escola garantem oportunidades iguais, valorizam a diversidade e promovem um ambiente acolhedor, livre de preconceitos e discriminação.</p>
+              </div>
+              <div class="cards">
+                <div class="card">
+                    <div class="emoji">🧑‍🤝‍🧑</div>
+                  <h3>Valorização da diversidade</h3>
+                  <p>A valorização da diversidade na escola consiste em respeitar as diferenças individuais, culturais e sociais, promovendo a inclusão, a igualdade e o respeito entre todos os alunos.</p>
+                </div>
+                <div class="card">
+                    <div class="emoji">🕊️</div>
+                  <h3>Promoção da empatia</h3>
+                  <p>A promoção da empatia na escola incentiva os alunos a compreenderem os sentimentos dos outros, desenvolvendo respeito, solidariedade e relacionamentos saudáveis.</p>
+                </div>
+                <div class="card">
+                    <div class="emoji">🛡️</div>
+                  <h3>Combate à discriminação</h3>
+                  <p>O combate à discriminação na escola busca prevenir preconceitos e exclusões, promovendo o respeito, a igualdade e a justiça para todos.</p>
+                </div>
+            </section>
+
+            <section id="quiz-educacao">
+              <div class="titulo">
+                <h2>📝 Quiz de Educação Escolar</h2>
+                <p>Responda às cinco perguntas para revisar os conteúdos sobre aprendizagem, organização dos estudos e convivência escolar.</p>
+              </div>
+
+              <form id="educationQuiz" class="card">
+                <fieldset>
+                  <legend><strong>1. Qual atitude ajuda a organizar os estudos?</strong></legend>
+                  <label><input type="radio" name="q1" value="a"> Deixar todas as tarefas para a última hora.</label><br>
+                  <label><input type="radio" name="q1" value="b"> Planejar horários e dividir as tarefas.</label><br>
+                  <label><input type="radio" name="q1" value="c"> Estudar apenas quando houver prova.</label>
+                </fieldset>
+
+                <fieldset>
+                  <legend><strong>2. Para que serve o reforço escolar?</strong></legend>
+                  <label><input type="radio" name="q2" value="a"> Para apoiar a aprendizagem e esclarecer dúvidas.</label><br>
+                  <label><input type="radio" name="q2" value="b"> Para substituir todas as aulas.</label><br>
+                  <label><input type="radio" name="q2" value="c"> Para impedir que os alunos trabalhem em grupo.</label>
+                </fieldset>
+
+                <fieldset>
+                  <legend><strong>3. Qual é um exemplo de técnica de estudo?</strong></legend>
+                  <label><input type="radio" name="q3" value="a"> Evitar revisar os conteúdos.</label><br>
+                  <label><input type="radio" name="q3" value="b"> Fazer várias tarefas sem pausas.</label><br>
+                  <label><input type="radio" name="q3" value="c"> Criar resumos e mapas mentais.</label>
+                </fieldset>
+
+                <fieldset>
+                  <legend><strong>4. Como podemos promover a inclusão na escola?</strong></legend>
+                  <label><input type="radio" name="q4" value="a"> Excluindo quem pensa diferente.</label><br>
+                  <label><input type="radio" name="q4" value="b"> Respeitando as diferenças e oferecendo oportunidades de participação.</label><br>
+                  <label><input type="radio" name="q4" value="c"> Fazendo piadas sobre os colegas.</label>
+                </fieldset>
+
+                <fieldset>
+                  <legend><strong>5. O que fazer diante de uma situação de bullying?</strong></legend>
+                  <label><input type="radio" name="q5" value="a"> Procurar um professor ou outro adulto de confiança.</label><br>
+                  <label><input type="radio" name="q5" value="b"> Compartilhar a situação nas redes sociais para constranger alguém.</label><br>
+                  <label><input type="radio" name="q5" value="c"> Fingir que nada aconteceu em todas as situações.</label>
+                </fieldset>
+
+                <p>
+                  <button class="botao" type="submit">Conferir respostas</button>
+                  <button class="botao" type="reset">Tentar novamente</button>
+                </p>
+                <p id="educationQuizResult" role="status" aria-live="polite"></p>
+                <div id="educationQuizFeedback" hidden></div>
+              </form>
+            </section>
+
+
+              <footer class="ecoplay-footer">
+  <p><strong>Educa+</strong> · Educação, meio ambiente e saúde</p>
+  <a href="#conteudo-principal">Voltar ao início ↑</a>
+</footer>
+
+    <script>
+    (function () {
+      const form = document.getElementById('educationQuiz');
+      const result = document.getElementById('educationQuizResult');
+      const feedback = document.getElementById('educationQuizFeedback');
+      if (!form || !result || !feedback) return;
+
+      const answers = { q1: 'b', q2: 'a', q3: 'c', q4: 'b', q5: 'a' };
+      const explanations = [
+        'Planejar horários e dividir tarefas torna os estudos mais organizados.',
+        'O reforço escolar ajuda a esclarecer dúvidas e fortalecer a aprendizagem.',
+        'Resumos e mapas mentais ajudam a organizar e revisar informações.',
+        'A inclusão envolve respeito às diferenças e participação de todos.',
+        'Procurar um adulto de confiança ajuda a obter apoio para lidar com o bullying.'
+      ];
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        let score = 0;
+        let unanswered = false;
+
+        Object.keys(answers).forEach(function (key) {
+          const selected = form.querySelector('input[name="' + key + '"]:checked');
+          if (!selected) unanswered = true;
+          else if (selected.value === answers[key]) score++;
+        });
+
+        if (unanswered) {
+          result.textContent = 'Responda às cinco perguntas antes de conferir o resultado.';
+          feedback.hidden = true;
+          feedback.textContent = '';
+          return;
+        }
+
+        result.textContent = 'Resultado: ' + score + ' de 5 respostas corretas.';
+        feedback.hidden = false;
+        const list = document.createElement('ol');
+        explanations.forEach(function (explanation) {
+          const item = document.createElement('li');
+          item.textContent = explanation;
+          list.appendChild(item);
+        });
+
+        feedback.replaceChildren();
+        const heading = document.createElement('h3');
+        heading.textContent = 'Revisão das respostas';
+        const message = document.createElement('p');
+        message.textContent = score === 5
+          ? 'Excelente! Você demonstrou que compreendeu os temas.'
+          : score >= 3
+            ? 'Bom trabalho! Leia as explicações e tente novamente se quiser.'
+            : 'Continue estudando os conteúdos da página e tente novamente.';
+        feedback.append(heading, list, message);
+      });
+
+      form.addEventListener('reset', function () {
+        result.textContent = '';
+        feedback.hidden = true;
+        feedback.textContent = '';
+      });
+    })();
+    </script>
+    <script src="./pwa.js" defer></script>
+</body>
+</html>
